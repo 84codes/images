@@ -22,7 +22,10 @@ jobs:
       packages: write
     strategy:
       matrix:
-        ruby-version: ["3.3.10", "3.4.8", "4.0.1"]
+        ruby-version:
+          - "3.3.10"
+          - "3.4.8"
+          - "4.0.1"
     steps:
       - uses: actions/checkout@v6
 

@@ -43,30 +43,16 @@ jobs:
           VERSION="${{ matrix.ruby-version }}"
           MINOR="${VERSION%.*}"
 
-          RUNTIME="${IMAGE}:${VERSION},${IMAGE}:${MINOR}"
-          BUILD="${IMAGE}:${VERSION}-build,${IMAGE}:${MINOR}-build"
+          TAGS="${IMAGE}:${VERSION},${IMAGE}:${MINOR}"
           if [ "${{ matrix.latest }}" = "true" ]; then
-            RUNTIME="${RUNTIME},${IMAGE}:latest"
-            BUILD="${BUILD},${IMAGE}:latest-build"
+            TAGS="${TAGS},${IMAGE}:latest"
           fi
 
-          echo "runtime=${RUNTIME}" >> "$GITHUB_OUTPUT"
-          echo "build=${BUILD}" >> "$GITHUB_OUTPUT"
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
 
-      - name: Build and push runtime image
-        uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@v7
         with:
           context: ruby
-          target: base
           build-args: RUBY_VERSION=${{ matrix.ruby-version }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.tags.outputs.runtime }}
-
-      - name: Build and push build image
-        uses: docker/build-push-action@v7
-        with:
-          context: ruby
-          target: build
-          build-args: RUBY_VERSION=${{ matrix.ruby-version }}
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.tags.outputs.build }}
+          tags: ${{ steps.tags.outputs.tags }}

@@ -22,12 +22,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        ruby-version:
-          - "3.3.10"
-          - "4.0.1"
-        include:
-          - ruby-version: "3.4.8"
-            latest: true
+        ruby-version: ["3.3.10", "3.4.8", "4.0.1"]
     steps:
       - uses: actions/checkout@v6
 
@@ -38,23 +33,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate tags
-        id: tags
-        run: |
-          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
-          VERSION="${{ matrix.ruby-version }}"
-          MINOR="${VERSION%.*}"
-
-          TAGS="${IMAGE}:${VERSION},${IMAGE}:${MINOR}"
-          if [ "${{ matrix.latest }}" = "true" ]; then
-            TAGS="${TAGS},${IMAGE}:latest"
-          fi
-
-          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
-
       - uses: docker/build-push-action@v7
         with:
           context: ruby
           build-args: RUBY_VERSION=${{ matrix.ruby-version }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.tags.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.ruby-version }}

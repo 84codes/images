@@ -22,7 +22,9 @@ jobs:
       packages: write
     strategy:
       matrix:
-        ruby-version: ["3.4.8", "3.3.7"]
+        ruby-version:
+          - "3.3.10"
+          - "4.0.1"
         include:
           - ruby-version: "3.4.8"
             latest: true

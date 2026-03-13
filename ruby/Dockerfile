@@ -11,6 +11,9 @@ RUN apt-get update -qq \
     postgresql-client \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
+# Non-root user for runtime stages (USER not set here so build stage keeps root)
+RUN useradd --system --uid 1000 app && chown app:app /app
+
 # Set production environment
 ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \

@@ -5,9 +5,11 @@ on:
     branches: [main]
     paths:
       - ruby/Dockerfile
+      - .github/workflows/ruby.yml
   pull_request:
     paths:
       - ruby/Dockerfile
+      - .github/workflows/ruby.yml
   workflow_dispatch:
 
 env:

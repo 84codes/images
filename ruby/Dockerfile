@@ -23,7 +23,8 @@ RUN useradd --system --uid 1000 app && chown app:app /app
 ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_CACHE_PATH="/usr/local/bundle/cache" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    LANG="C.UTF-8"
 
 # This can be overwritten at runtime
 CMD ["ruby", "-v"]

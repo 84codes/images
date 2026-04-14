@@ -12,8 +12,11 @@ RUN apt-get update -qq \
     git \
     libpq-dev \
     libyaml-dev \
+    locales \
     pkg-config \
     postgresql-client \
+    && sed -i '/en_US.UTF-8/s/^# //' /etc/locale.gen \
+    && locale-gen \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Non-root user for downstream runtime stages

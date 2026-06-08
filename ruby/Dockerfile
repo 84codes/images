@@ -12,8 +12,11 @@ RUN apt-get update -qq \
     git \
     libpq-dev \
     libyaml-dev \
+    locales \
     pkg-config \
     postgresql-client \
+    && sed -i '/en_US.UTF-8/s/^# //' /etc/locale.gen \
+    && locale-gen \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Non-root user for downstream runtime stages
@@ -23,7 +26,8 @@ RUN useradd --system --uid 1000 app && chown app:app /app
 ENV BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_CACHE_PATH="/usr/local/bundle/cache" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development" \
+    LANG="C.UTF-8"
 
 # This can be overwritten at runtime
 CMD ["ruby", "-v"]

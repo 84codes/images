@@ -31,6 +31,15 @@ jobs:
           - "4.0.1"
           - "4.0.2"
           - "4.0.7"
+        include:
+          # Releases that https://github.com/docker-library/ruby has not
+          # published yet are built from source (see ruby/Dockerfile). sha256 is
+          # for ruby-X.Y.Z.tar.xz from https://www.ruby-lang.org/en/downloads/
+          # Move the version to the list above once the official image exists.
+          - ruby-version: "3.4.12"
+            sha256: db6c147940d7ad0b706823d42c8e6713c36dec70a1f83f635f1d3a7f0599ec90
+          - ruby-version: "4.0.9"
+            sha256: a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -49,6 +58,9 @@ jobs:
         with:
           context: ruby
           platforms: linux/amd64,linux/arm64
-          build-args: RUBY_VERSION=${{ matrix.ruby-version }}
+          build-args: |
+            RUBY_VERSION=${{ matrix.ruby-version }}
+            BASE_IMAGE=${{ matrix.sha256 && 'source' || 'official' }}
+            RUBY_DOWNLOAD_SHA256=${{ matrix.sha256 }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.ruby-version }}
